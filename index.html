@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>축제 부스 쓰레기 영수증</title>
+
+  <style>
+    :root {
+      --green: #0b7a34;
+      --green-dark: #0b5d2a;
+      --blue: #164e7a;
+      --light: #f4f8f5;
+      --line: #dce8df;
+      --text: #123;
+      --muted: #667;
+      --danger: #c92a2a;
+      --orange: #f59f00;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: var(--light);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      line-height: 1.25;
+      color: var(--green-dark);
+      letter-spacing: -0.03em;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 21px;
+      color: var(--blue);
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      line-height: 1.55;
+    }
+
+    .sub {
+      margin: 0 0 24px;
+      color: var(--muted);
+    }
+
+    .card,
+    .qrCard {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+
+    .green {
+      background: #f2fff5;
+      border-color: #b8dfc0;
+    }
+
+    .blue {
+      background: #f7fbff;
+      border-color: #cfe4ff;
+    }
+
+    .error {
+      background: #fff7f7;
+      border-color: #f3b3b3;
+    }
+
+    .notice {
+      background: #e7f7ed;
+      border: 1px solid #b7e2c5;
+      color: var(--green-dark);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin: 16px 0;
+      font-weight: 800;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: 800;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccd8d0;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(11, 122, 52, 0.12);
+    }
+
+    button,
+    .buttonLink {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      background: var(--green);
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    button:hover,
+    .buttonLink:hover {
+      filter: brightness(0.95);
+    }
+
+    .secondary {
+      background: #31566f;
+    }
+
+    .ghost {
+      background: #edf2f0;
+      color: #31566f;
+    }
+
+    .danger {
+      background: var(--danger);
+    }
+
+    .boothName {
+      margin: 8px 0;
+      color: var(--green-dark);
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .waste {
+      margin: 18px 0;
+      color: var(--green);
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .minus {
+      color: #0b68b8;
+    }
+
+    .minusText {
+      color: #0b68b8;
+      font-weight: 900;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .userBox {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin: 16px 0;
+    }
+
+    .userBox p {
+      margin: 4px 0;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .summary.three {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .summary div,
+    .gameGrid div {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .summary span,
+    .gameGrid span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .summary b,
+    .gameGrid b {
+      color: var(--green-dark);
+      font-size: 21px;
+    }
+
+    .levelBox {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px;
+      border-radius: 16px;
+      color: white;
+      margin: 14px 0;
+    }
+
+    .levelBox span {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .levelBox b {
+      font-size: 30px;
+      letter-spacing: -0.03em;
+    }
+
+    .levelVeryLow { background: #0b7a34; }
+    .levelLow { background: #2f9e44; }
+    .levelMid { background: #f59f00; }
+    .levelHigh { background: #e67700; }
+    .levelVeryHigh { background: #c92a2a; }
+
+    .gameGrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .progressWrap {
+      margin: 16px 0;
+    }
+
+    .progressBar {
+      width: 100%;
+      height: 14px;
+      background: #e8eef5;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progressBar div {
+      height: 100%;
+      background: var(--green);
+      border-radius: 999px;
+      transition: width 0.2s ease;
+    }
+
+    .badgeWrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #e7f7ed;
+      color: var(--green-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .qrImg {
+      display: block;
+      width: 240px;
+      height: 240px;
+      margin: 14px auto;
+      border: 8px solid #f7faf8;
+      border-radius: 14px;
+    }
+
+    code {
+      display: block;
+      padding: 12px;
+      background: #f0f4f1;
+      border-radius: 10px;
+      font-size: 12px;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      padding: 10px 6px;
+      border-bottom: 1px solid #e8eee9;
+      text-align: left;
+    }
+
+    th {
+      color: #456;
+      background: #f7faf8;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+    }
+
+    .loading {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .topNav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .topNav a {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: white;
+      color: #31566f;
+      text-decoration: none;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 640px) {
+      .summary,
+      .summary.three,
+      .gameGrid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .summary,
+      .summary.three,
+      .gameGrid {
+        grid-template-columns: 1fr;
+      }
+
+      .qrImg {
+        width: 220px;
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap" id="app">
+    <div class="loading">불러오는 중...</div>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    /****************************************************
+     * 1. 여기에 Supabase 연결값 넣기
+     ****************************************************/
+    const SUPABASE_URL = "https://aowdfmmglnhxwdospskh.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_RIA2ELab5IiLlnllLBe_-g_op80ZTCM";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const STORAGE_KEY = "festival_user_id";
+    const app = document.getElementById("app");
+
+    const params = new URLSearchParams(window.location.search);
+    const boothId = params.get("booth_id");
+    const page = params.get("page");
+    const userIdParam = params.get("user_id");
+
+    /****************************************************
+     * 2. 기본 유틸
+     ****************************************************/
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatGram(value) {
+      const n = Number(value || 0);
+      return `${n > 0 ? "+" : ""}${n}g`;
+    }
+
+    function getSavedId() {
+      try {
+        return localStorage.getItem(STORAGE_KEY) || "";
+      } catch (err) {
+        return "";
+      }
+    }
+
+    function saveId(userId) {
+      try {
+        localStorage.setItem(STORAGE_KEY, userId);
+      } catch (err) {}
+    }
+
+    function clearId() {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (err) {}
+
+      alert("저장된 ID를 지웠습니다.");
+      window.location.reload();
+    }
+
+    window.clearSavedId = clearId;
+
+    function currentBaseUrl() {
+      return window.location.origin + window.location.pathname;
+    }
+
+    function makeQrUrl(text) {
+      return "https://quickchart.io/qr?size=300&margin=2&text=" + encodeURIComponent(text);
+    }
+
+    function topNav() {
+      return `
+        <div class="topNav">
+          <a href="${currentBaseUrl()}">홈</a>
+          <a href="${currentBaseUrl()}?page=qr">QR 목록</a>
+          <a href="${currentBaseUrl()}?page=admin">관리자</a>
+        </div>
+      `;
+    }
+
+    function renderError(title, message, detail = "") {
+      app.innerHTML = `
+        ${topNav()}
+        <div class="card error">
+          <h1>${escapeHtml(title)}</h1>
+          <p>${escapeHtml(message)}</p>
+          ${detail ? `<p class="hint">${escapeHtml(detail)}</p>` : ""}
+          <a class="buttonLink secondary" href="${currentBaseUrl()}">홈으로</a>
+        </div>
+      `;
+    }
+
+    function getWasteLevel(total) {
+      const value = Number(total || 0);
+
+      if (value <= 0) {
+        return {
+          level: "매우 낮음",
+          className: "levelVeryLow",
+          message: "절감 행동이 발생량보다 많거나 거의 쓰레기를 만들지 않았습니다."
+        };
+      }
+
+      if (value <= 30) {
+        return {
+          level: "낮음",
+          className: "levelLow",
+          message: "일회용품 사용이 적은 편입니다."
+        };
+      }
+
+      if (value <= 70) {
+        return {
+          level: "보통",
+          className: "levelMid",
+          message: "축제 참여 과정에서 평균적인 수준의 폐기물이 발생했습니다."
+        };
+      }
+
+      if (value <= 120) {
+        return {
+          level: "높음",
+          className: "levelHigh",
+          message: "일회용컵·음식용기 등으로 폐기물 발생량이 높은 편입니다."
+        };
+      }
+
+      return {
+        level: "매우 높음",
+        className: "levelVeryHigh",
+        message: "여러 부스 이용으로 폐기물이 많이 누적되었습니다. 절감 행동이 필요합니다."
+      };
+    }
+
+    function getRecommendation(data) {
+      const total = Number(data.total_waste_g || 0);
+      const saved = Number(data.saved_waste_g || 0);
+
+      if (saved >= 24 && total <= 30) {
+        return "개인컵 또는 포장 거절 같은 절감 행동이 잘 반영되었습니다. 다음 부스에서도 절감 QR을 함께 이용하면 좋습니다.";
+      }
+
+      if (total <= 0) {
+        return "현재 폐기물 발자국이 매우 낮습니다. 절감 행동이 충분히 반영되었습니다.";
+      }
+
+      if (total <= 30) {
+        return "폐기물 발자국이 낮은 편입니다. 다음 부스에서도 포장 거절 또는 다회용기 사용을 선택하면 더 줄일 수 있습니다.";
+      }
+
+      if (total <= 70) {
+        return "폐기물 발자국이 중간 수준입니다. 음료 부스에서는 개인컵을 사용하면 약 24g을 줄일 수 있습니다.";
+      }
+
+      return "폐기물 발자국이 높은 편입니다. 개인컵 사용, 포장 거절, 다회용기 선택 QR을 찍어 절감 행동을 추가해보세요.";
+    }
+
+    function getBadges(data) {
+      const badges = [];
+
+      if (Number(data.stamps || 0) >= 3) badges.push("스탬프 수집가");
+      if (Number(data.passport_done || 0) >= 3) badges.push("부스 탐험가");
+      if (Number(data.eco_count || 0) >= 1) badges.push("절감 실천자");
+      if (Number(data.eco_count || 0) >= 3) badges.push("제로웨이스트 도전자");
+      if (Number(data.treasure_count || 0) >= 1) badges.push("보물 QR 발견자");
+      if (Number(data.draw_tickets || 0) >= 3) badges.push("뽑기권 마스터");
+
+      return badges;
+    }
+
+    function passportPercent(data) {
+      const done = Number(data.passport_done || 0);
+      const total = Number(data.passport_total || 0);
+
+      if (total <= 0) return 0;
+      return Math.min(100, Math.round((done / total) * 100));
+    }
+
+    /****************************************************
+     * 3. Supabase 호출
+     ****************************************************/
+    async function fetchBooth(id) {
+      const { data, error } = await supabase
+        .from("booths")
+        .select("booth_id, booth_name, waste_g, description, category, points, is_treasure, max_per_user")
+        .eq("booth_id", id)
+        .eq("is_active", true)
+        .single();
+
+      if (error) throw error;
+      return data;
+    }
+
+    async function fetchBooths() {
+      const { data, error } = await supabase
+        .from("booths")
+        .select("booth_id, booth_name, waste_g, description, category, points, is_treasure, max_per_user")
+        .eq("is_active", true)
+        .order("booth_id", { ascending: true });
+
+      if (error) throw error;
+      return data || [];
+    }
+
+    async function recordQrScan(userId, boothId) {
+      const { data, error } = await supabase.rpc("record_qr_scan", {
+        p_user_id: userId,
+        p_booth_id: boothId
+      });
+
+      if (error) throw error;
+      return data;
+    }
+
+    async function getUserReceipt(userId) {
+      const { data, error } = await supabase.rpc("get_user_receipt", {
+        p_user_id: userId
+      });
+
+      if (error) throw error;
+      return data;
+    }
+
+    async function getAdminSummary() {
+      const { data, error } = await supabase.rpc("get_admin_summary");
+
+      if (error) throw error;
+      return data;
+    }
+
+    /****************************************************
+     * 4. 화면 렌더링
+     ****************************************************/
+    function renderHome() {
+      const savedId = getSavedId();
+
+      app.innerHTML = `
+        ${topNav()}
+
+        <h1>축제 부스 쓰레기 영수증</h1>
+        <p class="sub">부스 QR을 찍고 학번/ID를 입력하면 개인별 쓰레기 소비량이 자동 누적됩니다.</p>
+
+        <div class="card">
+          <h2>내 쓰레기 영수증 확인</h2>
+          <label>학번 / ID</label>
+          <input id="receiptInput" placeholder="대신고: 학번 / 외부학교: EXT001" value="${escapeHtml(savedId)}" autocomplete="off">
+          <button id="receiptBtn">조회하기</button>
+          <button class="ghost" onclick="clearSavedId()">저장된 ID 지우기</button>
+        </div>
+
+        <div class="card green">
+          <h2>부스 QR 테스트</h2>
+          <p>QR을 찍지 않아도 노트북에서는 QR 목록에서 부스 링크를 눌러 테스트할 수 있습니다.</p>
+          <a class="buttonLink" href="${currentBaseUrl()}?page=qr">부스 QR 목록 보기</a>
+        </div>
+
+        <div class="card">
+          <h2>아이디 입력 기준</h2>
+          <p><b>대신고 학생</b>: 본인 학번 입력</p>
+          <p><b>외부학교 학생</b>: 입구에서 부여받은 ID 입력</p>
+          <p class="hint">테스트용 ID: TEST01</p>
+        </div>
+      `;
+
+      document.getElementById("receiptBtn").onclick = async () => {
+        const userId = document.getElementById("receiptInput").value.trim();
+
+        if (!userId) {
+          alert("ID를 입력하세요.");
+          return;
+        }
+
+        saveId(userId);
+        await loadReceipt(userId);
+      };
+    }
+
+    async function renderLoginForBooth(id) {
+      app.innerHTML = `<div class="loading">부스 정보를 불러오는 중...</div>`;
+
+      try {
+        const booth = await fetchBooth(id);
+        const savedId = getSavedId();
+
+        app.innerHTML = `
+          ${topNav()}
+
+          <h1>축제 쓰레기 영수증 로그인</h1>
+          <p class="sub">학번 또는 부여받은 ID를 입력하면 현재 QR에 연결된 부스 쓰레기값이 자동 누적됩니다.</p>
+
+          <div class="card">
+            <h2>현재 접속한 부스</h2>
+            <p class="boothName">${escapeHtml(booth.booth_name)}</p>
+            <p>${escapeHtml(booth.description || "")}</p>
+
+            <div class="waste ${Number(booth.waste_g) < 0 ? "minus" : ""}">
+              ${formatGram(booth.waste_g)}
+            </div>
+
+            <label>학번 / ID</label>
+            <input id="userIdInput" placeholder="대신고: 학번 / 외부학교: EXT001" value="${escapeHtml(savedId)}" autocomplete="off">
+
+            <button id="recordBtn">로그인하고 자동 누적하기</button>
+            <button class="ghost" onclick="clearSavedId()">저장된 ID 지우기</button>
+          </div>
+
+          <div class="card blue">
+            <h2>ID 기억 기능</h2>
+            <p>한 번 입력한 ID는 이 브라우저에 저장되어 다음 QR부터 자동으로 입력됩니다.</p>
+            <p class="hint">공용 기기에서는 사용 후 “저장된 ID 지우기”를 누르세요.</p>
+          </div>
+        `;
+
+        document.getElementById("recordBtn").onclick = async () => {
+          const userId = document.getElementById("userIdInput").value.trim();
+
+          if (!userId) {
+            alert("ID를 입력하세요.");
+            return;
+          }
+
+          saveId(userId);
+
+          const btn = document.getElementById("recordBtn");
+          btn.disabled = true;
+          btn.textContent = "기록 중...";
+
+          try {
+            const result = await recordQrScan(userId, id);
+            renderReceipt(result, `${result.booth_name} ${formatGram(result.waste_g)}이 자동 누적되었습니다.`);
+          } catch (err) {
+            renderError("기록 실패", err.message || "알 수 없는 오류가 발생했습니다.", "ID 또는 QR 정보를 확인하세요.");
+          }
+        };
+
+      } catch (err) {
+        renderError("부스 조회 실패", err.message || "부스 정보를 불러오지 못했습니다.", "booth_id가 정확한지 확인하세요.");
+      }
+    }
+
+    function renderReceipt(data, message = "") {
+      const level = getWasteLevel(data.total_waste_g);
+      const percent = passportPercent(data);
+      const badges = getBadges(data);
+      const recommendation = getRecommendation(data);
+      const recentLogs = Array.isArray(data.recent_logs) ? data.recent_logs : [];
+
+      const rowsHtml = recentLogs.length
+        ? recentLogs.map(row => `
+            <tr>
+              <td>${escapeHtml(row.booth_name)}</td>
+              <td class="${Number(row.waste_g) < 0 ? "minusText" : ""}">${formatGram(row.waste_g)}</td>
+              <td>${escapeHtml(row.category || "")}</td>
+            </tr>
+          `).join("")
+        : `<tr><td colspan="3" class="empty">최근 기록이 없습니다.</td></tr>`;
+
+      app.innerHTML = `
+        ${topNav()}
+
+        <h1>내 쓰레기 영수증</h1>
+
+        ${message ? `<div class="notice">${escapeHtml(message)}</div>` : ""}
+
+        <div class="userBox">
+          <p><b>ID:</b> ${escapeHtml(data.user_id)}</p>
+          <p><b>구분:</b> ${escapeHtml(data.user_type || "")}</p>
+          <p><b>소속:</b> ${escapeHtml(data.school || "")} / ${escapeHtml(data.team || "")}</p>
+        </div>
+
+        <div class="summary">
+          <div>
+            <span>발생량</span>
+            <b>${Number(data.positive_waste_g || 0)}g</b>
+          </div>
+          <div>
+            <span>절감량</span>
+            <b class="minusText">${Number(data.saved_waste_g || 0)}g</b>
+          </div>
+          <div>
+            <span>최종 발자국</span>
+            <b>${Number(data.total_waste_g || 0)}g</b>
+          </div>
+          <div>
+            <span>스탬프</span>
+            <b>${Number(data.stamps || 0)}개</b>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>나의 쓰레기 소비 정도</h2>
+          <div class="levelBox ${level.className}">
+            <span>등급</span>
+            <b>${level.level}</b>
+          </div>
+          <p>${level.message}</p>
+        </div>
+
+        <div class="card green">
+          <h2>다음 행동 추천</h2>
+          <p>${recommendation}</p>
+        </div>
+
+        <div class="card blue">
+          <h2>환경 패스포트</h2>
+
+          <div class="gameGrid">
+            <div>
+              <span>포인트</span>
+              <b>${Number(data.points || 0)}점</b>
+            </div>
+            <div>
+              <span>뽑기권</span>
+              <b>${Number(data.draw_tickets || 0)}장</b>
+            </div>
+            <div>
+              <span>보물 QR</span>
+              <b>${Number(data.treasure_count || 0)}개</b>
+            </div>
+            <div>
+              <span>절감 행동</span>
+              <b>${Number(data.eco_count || 0)}회</b>
+            </div>
+          </div>
+
+          <div class="progressWrap">
+            <p><b>부스 탐험 진행률</b> ${Number(data.passport_done || 0)}/${Number(data.passport_total || 0)} (${percent}%)</p>
+            <div class="progressBar">
+              <div style="width:${percent}%"></div>
+            </div>
+          </div>
+
+          <div class="badgeWrap">
+            ${
+              badges.length
+                ? badges.map(badge => `<span class="badge">${escapeHtml(badge)}</span>`).join("")
+                : `<span class="hint">아직 획득한 배지가 없습니다. QR을 더 탐험해보세요.</span>`
+            }
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>최근 기록</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>부스/행동</th>
+                <th>폐기물</th>
+                <th>종류</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function loadReceipt(userId) {
+      app.innerHTML = `<div class="loading">영수증을 불러오는 중...</div>`;
+
+      try {
+        const data = await getUserReceipt(userId);
+        renderReceipt(data);
+      } catch (err) {
+        renderError("조회 실패", err.message || "영수증을 불러오지 못했습니다.", "ID가 app_users에 등록되어 있는지 확인하세요.");
+      }
+    }
+
+    async function renderQrList() {
+      app.innerHTML = `<div class="loading">QR 목록을 불러오는 중...</div>`;
+
+      try {
+        const booths = await fetchBooths();
+
+        const cards = booths.map(booth => {
+          const url = `${currentBaseUrl()}?booth_id=${encodeURIComponent(booth.booth_id)}`;
+          const qr = makeQrUrl(url);
+
+          return `
+            <div class="qrCard">
+              <h2>${escapeHtml(booth.booth_name)}</h2>
+              <p><b>부스 ID:</b> ${escapeHtml(booth.booth_id)}</p>
+              <p><b>폐기물 기본값:</b> <span class="${Number(booth.waste_g) < 0 ? "minusText" : ""}">${formatGram(booth.waste_g)}</span></p>
+              <p><b>종류:</b> ${escapeHtml(booth.category)}</p>
+              <p>${escapeHtml(booth.description || "")}</p>
+
+              <img class="qrImg" src="${qr}" alt="QR">
+
+              <p class="hint">휴대폰에서는 QR을 스캔하고, 노트북에서는 아래 버튼으로 테스트하면 됩니다.</p>
+              <code>${url}</code>
+
+              <a class="buttonLink" href="${url}">이 QR 테스트하기</a>
+            </div>
+          `;
+        }).join("");
+
+        app.innerHTML = `
+          ${topNav()}
+          <h1>부스 QR 목록</h1>
+          <p class="sub">각 부스에 아래 QR을 출력해서 붙이면 됩니다.</p>
+          ${cards || `<div class="card"><p>등록된 부스가 없습니다.</p></div>`}
+        `;
+
+      } catch (err) {
+        renderError("QR 목록 오류", err.message || "QR 목록을 불러오지 못했습니다.", "booths select 정책 또는 Supabase 키를 확인하세요.");
+      }
+    }
+
+    async function renderAdmin() {
+      app.innerHTML = `<div class="loading">관리자 통계를 불러오는 중...</div>`;
+
+      try {
+        const data = await getAdminSummary();
+        const boothSummary = Array.isArray(data.booth_summary) ? data.booth_summary : [];
+
+        const rowsHtml = boothSummary.length
+          ? boothSummary.map(row => `
+              <tr>
+                <td>${escapeHtml(row.booth_name)}</td>
+                <td>${Number(row.scan_count || 0)}회</td>
+                <td>${Number(row.waste_sum || 0)}g</td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="3" class="empty">아직 기록이 없습니다.</td></tr>`;
+
+        app.innerHTML = `
+          ${topNav()}
+
+          <h1>관리자 통계</h1>
+          <p class="sub">행사 중 과도한 새로고침은 피하고, 테스트·종료 후 확인용으로 쓰면 됩니다.</p>
+
+          <div class="summary three">
+            <div>
+              <span>전체 로그</span>
+              <b>${Number(data.total_logs || 0)}회</b>
+            </div>
+            <div>
+              <span>활성 사용자</span>
+              <b>${Number(data.active_users || 0)}명</b>
+            </div>
+            <div>
+              <span>전체 절감량</span>
+              <b class="minusText">${Number(data.total_saved_g || 0)}g</b>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>부스별 기록</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>부스</th>
+                  <th>기록 수</th>
+                  <th>폐기물 합계</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml}
+              </tbody>
+            </table>
+          </div>
+        `;
+
+      } catch (err) {
+        renderError("관리자 통계 오류", err.message || "관리자 통계를 불러오지 못했습니다.", "get_admin_summary 함수 권한을 확인하세요.");
+      }
+    }
+
+    /****************************************************
+     * 5. 라우팅
+     ****************************************************/
+    async function init() {
+      if (!SUPABASE_URL.includes("supabase.co") || SUPABASE_KEY.includes("여기에_")) {
+        renderError(
+          "Supabase 연결값 필요",
+          "index.html 상단의 SUPABASE_URL과 SUPABASE_KEY를 먼저 입력하세요.",
+          "Project Settings → API에서 Project URL과 anon/public key를 복사해 넣으면 됩니다."
+        );
+        return;
+      }
+
+      if (page === "qr") {
+        await renderQrList();
+        return;
+      }
+
+      if (page === "admin") {
+        await renderAdmin();
+        return;
+      }
+
+      if (userIdParam) {
+        saveId(userIdParam);
+        await loadReceipt(userIdParam);
+        return;
+      }
+
+      if (boothId) {
+        await renderLoginForBooth(boothId);
+        return;
+      }
+
+      renderHome();
+    }
+
+    init();
+  </script>
+</body>
+</html>
