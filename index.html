@@ -622,7 +622,14 @@
       if (error) throw error;
       return data;
     }
+async function drawReward(userId) {
+  const { data, error } = await supabase.rpc("draw_reward", {
+    p_user_id: userId
+  });
 
+  if (error) throw error;
+  return data;
+}
     /****************************************************
      * 4. 화면 렌더링
      ****************************************************/
@@ -751,7 +758,35 @@
         : `<tr><td colspan="3" class="empty">최근 기록이 없습니다.</td></tr>`;
 
       app.innerHTML = `
-        ${topNav()}
+        ${topNav()const drawBtn = document.getElementById("drawBtn");
+
+if (drawBtn) {
+  drawBtn.onclick = async () => {
+    drawBtn.disabled = true;
+    drawBtn.textContent = "뽑는 중...";
+
+    try {
+      const result = await drawReward(data.user_id);
+
+      alert(
+        `${result.reward_rank}: ${result.reward_name}\n\n` +
+        `${result.reward_message}\n\n` +
+        `당첨코드: ${result.claim_code}`
+      );
+
+      const updated = await getUserReceipt(data.user_id);
+      renderReceipt(
+        updated,
+        `${result.reward_rank}: ${result.reward_name} / 당첨코드 ${result.claim_code}`
+      );
+    } catch (err) {
+      alert(err.message || "뽑기 중 오류가 발생했습니다.");
+
+      const updated = await getUserReceipt(data.user_id);
+      renderReceipt(updated);
+    }
+  };
+}}
 
         <h1>내 쓰레기 영수증</h1>
 
@@ -824,7 +859,15 @@
               <div style="width:${percent}%"></div>
             </div>
           </div>
-
+<div class="card green" style="margin-top:16px;">
+  <h2>경품 랜덤 뽑기</h2>
+  <p>포인트 30점마다 뽑기권 1장이 지급됩니다. 뽑기를 하면 뽑기권 1장이 사용됩니다.</p>
+  <p><b>현재 사용 가능한 뽑기권:</b> ${Number(data.draw_tickets || 0)}장</p>
+  <button id="drawBtn" ${Number(data.draw_tickets || 0) <= 0 ? "disabled" : ""}>
+    뽑기하기
+  </button>
+  <p class="hint">경품에 당첨되면 화면에 당첨코드가 표시됩니다. 운영부스에 화면을 보여주거나 운영진에게 당첨코드를 전달하세요.</p>
+</div>
           <div class="badgeWrap">
             ${
               badges.length
