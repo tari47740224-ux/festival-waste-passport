@@ -34,13 +34,7 @@
     const saveId = id => { try { localStorage.setItem(STORAGE_KEY, id); } catch {} };
     window.clearSavedId = () => { try { localStorage.removeItem(STORAGE_KEY); } catch {} alert("저장된 ID를 지웠습니다."); location.reload(); };
 
-   function topNav() {
-  return `
-    <div class="topNav">
-      <a href="${currentBaseUrl()}">홈</a>
-    </div>
-  `;
-}
+   function nav(){return `<div class="topNav"><a href="${baseUrl()}">홈</a></div>`}
     function errorPage(title,msg,detail=""){app.innerHTML=`${nav()}<div class="card error"><h1>${esc(title)}</h1><p>${esc(msg)}</p>${detail?`<p class="hint">${esc(detail)}</p>`:""}<a class="buttonLink secondary" href="${baseUrl()}">홈으로</a></div>`;}
 
     function wasteLevel(total){const v=Number(total||0);if(v<=0)return{level:"매우 낮음",cls:"levelVeryLow",msg:"절감 행동이 발생량보다 많거나 거의 쓰레기를 만들지 않았습니다."};if(v<=30)return{level:"낮음",cls:"levelLow",msg:"일회용품 사용이 적은 편입니다."};if(v<=70)return{level:"보통",cls:"levelMid",msg:"축제 참여 과정에서 평균적인 수준의 폐기물이 발생했습니다."};if(v<=120)return{level:"높음",cls:"levelHigh",msg:"일회용컵·음식용기 등으로 폐기물 발생량이 높은 편입니다."};return{level:"매우 높음",cls:"levelVeryHigh",msg:"여러 부스 이용으로 폐기물이 많이 누적되었습니다. 절감 행동이 필요합니다."};}
